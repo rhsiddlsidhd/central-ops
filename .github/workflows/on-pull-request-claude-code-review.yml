@@ -1,26 +1,17 @@
 name: On Pull Request Claude Code Review
 
-
-
 on:
-  pull_request:
-    types: [opened, synchronize]
-    paths:
-      # 1. 포함할 경로들
-      - 'src/**'
-      - 'next.config.ts'
-      - 'tsconfig.json'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/**'
-
-      # 2. 위 경로 중에서 제외할 경로들
-      # 반드시 포함할 경로 뒤에 와야 합니다.
-      - '!**/*.md'
-      - '!src/**/*.test.ts'
-      - '!src/**/*.test.tsx'
-      - '!src/**/*.spec.ts'
-      - '!src/**/*.spec.tsx'
+  workflow_call:
+    secrets:
+      APP_ID:
+        description: "GitHub App ID for creating installation access tokens"
+        required: true
+      APP_PRIVATE_KEY:
+        description: "GitHub App Private Key for creating installation access tokens"
+        required: true
+      CLAUDE_CODE_OAUTH_TOKEN:
+        description: "Claude Code OAuth Token for code review"
+        required: true
 
 jobs:
   claude-review:
@@ -43,8 +34,6 @@ jobs:
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-
 
       - name: Run Claude Code Review
         id: claude-review
