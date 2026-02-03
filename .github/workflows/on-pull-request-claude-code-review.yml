@@ -1,26 +1,17 @@
 name: On Pull Request Claude Code Review
 
-
-
 on:
-  pull_request:
-    types: [opened, synchronize]
-    paths:
-      # 1. 포함할 경로들
-      - 'src/**'
-      - 'next.config.ts'
-      - 'tsconfig.json'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/**'
-
-      # 2. 위 경로 중에서 제외할 경로들
-      # 반드시 포함할 경로 뒤에 와야 합니다.
-      - '!**/*.md'
-      - '!src/**/*.test.ts'
-      - '!src/**/*.test.tsx'
-      - '!src/**/*.spec.ts'
-      - '!src/**/*.spec.tsx'
+  workflow_call:
+    secrets:
+      APP_ID:
+        description: "GitHub App ID for creating installation access tokens"
+        required: true
+      APP_PRIVATE_KEY:
+        description: "GitHub App Private Key for creating installation access tokens"
+        required: true
+      CLAUDE_CODE_OAUTH_TOKEN:
+        description: "Claude Code OAuth Token for code review"
+        required: true
 
 jobs:
   claude-review:
@@ -44,8 +35,6 @@ jobs:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
-
-
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
@@ -57,7 +46,7 @@ jobs:
             시니어 개발자로서 PR #${{ github.event.pull_request.number }}를 리뷰하고 한국어로 인라인 리뷰 코멘트를 남겨주세요.
 
             ## Preparation
-            1. `GEMINI.md` 파일을 읽고 프로젝트 컨벤션과 아키텍처 규칙 파악
+            1. Read 도구로 `GEMINI.md` 파일을 읽어보고, 파일이 존재한다면 프로젝트 컨벤션과 아키텍처 규칙을 파악. 파일이 없어도 에러 없이 다음 단계로 진행
             2. `gh pr diff ${{ github.event.pull_request.number }}` - 변경사항 확인 (src/ 디렉토리 집중)
             3. 기존 인라인 리뷰 코멘트 확인:
                `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments`
