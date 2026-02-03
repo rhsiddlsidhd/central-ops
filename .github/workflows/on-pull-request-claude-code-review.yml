@@ -46,7 +46,7 @@ jobs:
             시니어 개발자로서 PR #${{ github.event.pull_request.number }}를 리뷰하고 한국어로 피드백을 남겨주세요.
 
             ## Preparation
-            1. `GEMINI.md` 파일을 읽고 프로젝트 컨벤션과 아키텍처 규칙 파악
+            1. Read 도구로 `GEMINI.md` 파일을 읽어보고, 파일이 존재한다면 프로젝트 컨벤션과 아키텍처 규칙을 파악. 파일이 없어도 에러 없이 다음 단계로 진행
             2. `gh pr diff ${{ github.event.pull_request.number }}` - 변경사항 확인 (src/ 디렉토리 집중)
             3. `gh pr view ${{ github.event.pull_request.number }} --comments` - 기존 코멘트 확인
             4. 이미 지적된 내용은 다시 언급하지 않음
