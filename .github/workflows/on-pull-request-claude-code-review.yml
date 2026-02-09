@@ -47,7 +47,7 @@ jobs:
             린터, 타입체커, 포매터가 잡는 문제는 무시하고, 사람만 판단할 수 있는 맥락적 이슈에만 집중하세요.
 
             ## 준비
-            1. Read 도구로 `GEMINI.md` 파일을 읽고 프로젝트 규칙 파악 (파일이 없으면 무시하고 진행)
+            1. Glob 도구로 `**/CONVENTION.md` 탐색 후, 존재하면 Read로 읽어 프로젝트 규칙 파악 (없으면 무시)
             2. `gh pr diff ${{ github.event.pull_request.number }}` 로 변경사항 확인
             3. 변경된 파일의 원본을 Read 도구로 읽어 전체 맥락 파악
             4. `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments` 로 기존 코멘트 확인 후, 이미 지적된 내용은 중복하지 않음
@@ -69,6 +69,12 @@ jobs:
             - 덮어쓰기, 잘못된 삭제, 트랜잭션 누락
             - 에러 발생 시 부분 실행 상태로 남는 로직
 
+            **4. 실수로 남긴 코드**
+            - console.log, print, debugger 등 디버그 코드가 남아있는 경우
+            - 주석 처리된 코드 블록이 포함된 경우
+            - .env, config 등 설정 파일의 의도치 않은 변경
+            - TODO/FIXME 주석이 미해결 상태로 추가된 경우
+
             ## 리뷰 범위 밖 (이것은 무시한다)
             - 코드 스타일, 포맷팅, 네이밍 컨벤션
             - 타입 정의 (`any` 사용 등은 린터가 처리)
@@ -78,41 +84,11 @@ jobs:
 
             ## 코멘트 작성 규칙
             - 확실한 문제만 지적한다. 추측이나 "~할 수도 있다" 수준이면 코멘트하지 않는다.
-            - 코멘트 형식:
-              ```
-              **[Bug]** 또는 **[Security]** 또는 **[Data Loss]**
-
-              (무엇이 문제인지 1-2문장)
-
-              문제 코드:
-              ```lang
-              해당 코드
-              ```
-
-              수정 제안:
-              ```lang
-              수정 코드
-              ```
-              ```
+            - 코멘트 형식: `**[Bug/Security/Data Loss/Mistake]** 문제 설명 + 수정 제안 코드`
 
             ## 리뷰 제출
-            `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews` 에 POST 요청:
-
-            ```bash
-            gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews \
-              --method POST \
-              -f body="리뷰 요약 (발견된 이슈가 없으면 '확인된 문제 없음')" \
-              -f event="COMMENT" \
-              -f 'comments=[
-                {
-                  "path": "상대파일경로",
-                  "line": 라인번호,
-                  "body": "코멘트 내용"
-                }
-              ]'
-            ```
-
-            - event는 항상 `COMMENT`로 설정한다. APPROVE나 REQUEST_CHANGES는 사용하지 않는다.
-            - 발견된 이슈가 없으면 comments를 빈 배열로 하고 body에 "확인된 문제 없음"으로 제출한다.
+            - `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews` 에 POST
+            - event는 항상 `COMMENT` (APPROVE나 REQUEST_CHANGES 사용 금지)
+            - 이슈 없으면 comments 빈 배열 + body에 "확인된 문제 없음"
 
           claude_args: '--allowed-tools "Read,Glob,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh api:*)"'
