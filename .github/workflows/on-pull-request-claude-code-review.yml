@@ -47,10 +47,9 @@ jobs:
             린터, 타입체커, 포매터가 잡는 문제는 무시하고, 사람만 판단할 수 있는 맥락적 이슈에만 집중하세요.
 
             ## 준비
-            1. Glob 도구로 `**/CONVENTION.md` 탐색 후, 존재하면 Read로 읽어 프로젝트 규칙 파악 (없으면 무시)
-            2. `gh pr diff ${{ github.event.pull_request.number }}` 로 변경사항 확인
-            3. 변경된 파일의 원본을 Read 도구로 읽어 전체 맥락 파악
-            4. `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments` 로 기존 코멘트 확인 후, 이미 지적된 내용은 중복하지 않음
+            1. `gh pr diff ${{ github.event.pull_request.number }}` 로 변경사항 확인
+            2. 변경된 파일의 원본을 Read 도구로 읽어 전체 맥락 파악
+            3. `gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments` 로 기존 코멘트 확인 후, 이미 지적된 내용은 중복하지 않음
 
             ## 리뷰 범위 (이것만 본다)
 
