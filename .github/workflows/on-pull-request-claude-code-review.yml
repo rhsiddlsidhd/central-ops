@@ -75,8 +75,8 @@ jobs:
             - TODO/FIXME 주석이 미해결 상태로 추가된 경우
 
             ## 리뷰 범위 밖 (이것은 무시한다)
-            - 코드 스타일, 포맷팅, 네이밍 컨벤션
-            - 타입 정의 (`any` 사용 등은 린터가 처리)
+            - 코드 스타일, 포매터가 처리할 수 있는 단순 포맷팅 (이미 린터가 잡음)
+            - 타입 정의 (any 사용 등은 린터가 처리)
             - 테스트 커버리지 부족
             - 리팩토링 제안, 성능 최적화 제안
             - "더 나은 방법이 있다" 수준의 개선 제안
@@ -90,4 +90,4 @@ jobs:
             - event는 항상 `COMMENT` (APPROVE나 REQUEST_CHANGES 사용 금지)
             - 이슈 없으면 comments 빈 배열 + body에 "확인된 문제 없음"
 
-          claude_args: '--allowed-tools "Read,Glob,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh api:*)"'
+          claude_args: '--allowed-tools "Read,Glob,LS,Grep,Bash(gh *)"'
